@@ -20,7 +20,10 @@ model = genai.GenerativeModel(
     # See https://ai.google.dev/gemini-api/docs/safety-settings
 )
 
-chat_session = model.start_chat()
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
+
+chat_session = model.start_chat(history=st.session_state.chat_history)
 
 st.title("💬 Chatbot")
 
@@ -56,3 +59,4 @@ if prompt := st.chat_input():
         full_response = stream_response(response)
         st.write_stream(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
+    st.session_state.chat_history = chat_session.history

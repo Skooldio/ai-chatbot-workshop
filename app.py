@@ -34,8 +34,8 @@ for msg in st.session_state.messages:
 
 
 def get_chat_response(prompt):
-    response = chat_session.send_message(prompt)
-    return response.text
+    response = chat_session.send_message(prompt, stream=True)
+    return response
 
 
 def stream_response(response):
@@ -53,5 +53,6 @@ if prompt := st.chat_input():
         "assistant",
     ):
         response = get_chat_response(prompt)
-        st.write(response)
-    st.session_state.messages.append({"role": "assistant", "content": response})
+        full_response = stream_response(response)
+        st.write_stream(full_response)
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
